@@ -1,40 +1,60 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
-  </div>
+  <v-container>
+    <h1>파일 업로더</h1>
+    <input id="file-selector" ref="file" type="file"
+    @change="handleFileUpload()">
+    <v-btn @click="upload()" color="primary">업로드</v-btn>
+  </v-container>
 </template>
 
 <script>
-export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
+import AWS from 'aws-sdk'
+
+export default{
+  data () {
+    return {
+      file: null,
+      BucketName: 'clothes-photo',
+      bucketRegion: 'us-east-1',
+      IdentityPoolId: 'us-east-1:5d8864f0-e6ef-47ac-8072-82b45e5d5627'
+    }
+  },
+
+
+  methods: {
+    handleFileUpload() {
+      this.file = this.$refs.file.files[0]
+      console.log(this.file, "파일이 선택 되었습니다")
+    },
+    upload() {
+      AWS.config.update({
+        region: 'us-east-1',
+        credentials: new AWS.CognitoIdentityCredentials({
+          IdentityPoolId: 'us-east-1:5d8864f0-e6ef-47ac-8072-82b45e5d5627'
+        })
+      });
+
+      const s3 = new AWS.S3({
+        apiVersion: '2006-03-01',
+        params: {
+          Bucket: 'clothes-photo'
+        }
+      })
+
+      let photoKey = this.file.name
+      s3.upload({
+        Key: photoKey,
+        Body: this.file,
+        ACL: 'public-read'
+      }, (err, data) => {
+        if(err) {
+          console.log(err)
+          return alert('There was an error: ', err.message);
+        }
+        alert('Successfully uploaded photo.');
+        console.log(data)
+      })
+    }
   }
 }
 </script>

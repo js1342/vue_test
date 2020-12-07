@@ -54,7 +54,7 @@ export default{
         alert('Successfully uploaded photo.');
         console.log(data)
       })
-    }
+    },
   }
 }
 </script>

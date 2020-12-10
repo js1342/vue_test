@@ -1,6 +1,10 @@
 <template>
   <v-container>
     <h1>Http request</h1>
+    <div>{{ user.name }}</div>
+    <div>{{ user.email }}</div>
+    <div>{{ user.phone_number }}</div>
+    <div>{{ user.friends }}</div>
   </v-container>
 </template>
 
@@ -11,18 +15,19 @@ import axios from 'axios'
 export default{
   data () {
     return {
-      file: null,
-      BucketName: 'clothes-photo',
-      bucketRegion: 'us-east-1',
-      IdentityPoolId: 'us-east-1:5d8864f0-e6ef-47ac-8072-82b45e5d5627'
+      // get 요청으로 받아온 user 변수
+      user: null
     }
   },
   created() {
+    // 페이지가 로드 될때 유저 정보를 호출하는 http get request
+    // get 요청하기
     axios.get(`https://zizqnx33mi.execute-api.us-east-2.amazonaws.com/dev/user/kmj1995kr@gmail.com`)
     .then(response => {
       // JSON responses are automatically parsed.
-      this.posts = response.data
-      console.log(this.posts)
+      // 요청정보가 user 변수에 저장
+      this.user = response.data
+      console.log(this.user)
     })
   }
 }

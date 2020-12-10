@@ -2,7 +2,8 @@
   <v-container>
     <h1>파일 리스트</h1>
     <div v-for="file in fileList" :key="file.Key">
-      {{file.Key}}
+      <!-- {{file.Key}} -->
+      <img :src="BucketUrl+file.Key">
       <v-btn @click="deleteFile" color="red" flat icon>x</v-btn>
     </div>
     <h1>파일 업로더</h1>
@@ -23,7 +24,8 @@ export default{
       BucketName: 'clothes-photo',
       bucketRegion: 'us-east-1',
       IdentityPoolId: 'us-east-1:5d8864f0-e6ef-47ac-8072-82b45e5d5627',
-      fileList: []
+      fileList: [],
+      BucketUrl: "https://clothes-photo.s3.amazonaws.com/"
     }
   },
 
@@ -42,7 +44,7 @@ export default{
     upload() { 
       // aws configuration
       AWS.config.update({
-        region: 'us-east-1',
+        region: '',
         credentials: new AWS.CognitoIdentityCredentials({
           IdentityPoolId: 'us-east-1:5d8864f0-e6ef-47ac-8072-82b45e5d5627'
         })

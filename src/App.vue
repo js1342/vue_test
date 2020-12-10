@@ -1,20 +1,17 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <UploadPhoto msg="Welcome to Your Vue.js App"/>
-    <HttpRequest msg="Welcome to Your Vue.js App"/>
+    <ListPhoto msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
 
 <script>
-import UploadPhoto from './components/UploadPhoto.vue'
-import HttpRequest from './components/HttpRequest.vue'
+import ListPhoto from './components/ListPhoto.vue'
 
 export default {
   name: 'App',
   components: {
-    UploadPhoto,
-    HttpRequest
+    ListPhoto
   }
 }
 </script>
